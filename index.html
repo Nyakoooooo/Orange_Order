@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>発注システム</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <h1>飲食店向け発注システム</h1>
+    <form id="order-form">
+        <table>
+            <thead>
+                <tr>
+                    <th>品目</th>
+                    <th>在庫数</th>
+                    <th>必要数</th>
+                    <th>発注メッセージ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>生卵（頑固 赤玉）</td>
+                    <td><input type="number" id="stock-egg" value="0"></td>
+                    <td id="required-egg">曜日により異なる</td>
+                    <td id="message-egg"></td>
+                </tr>
+                <tr>
+                    <td>温泉卵</td>
+                    <td><input type="number" id="stock-onsen-egg" value="0"></td>
+                    <td id="required-onsen-egg">曜日により異なる</td>
+                    <td id="message-onsen-egg"></td>
+                </tr>
+                <tr>
+                    <td>ペーパータオル</td>
+                    <td><input type="number" id="stock-towel" value="0"></td>
+                    <td>適宜確認</td>
+                    <td id="message-towel">適宜判断</td>
+                </tr>
+                <tr>
+                    <td>はし（菩提樹８寸元禄）</td>
+                    <td><input type="number" id="stock-chopsticks" value="0"></td>
+                    <td>適宜確認</td>
+                    <td id="message-chopsticks">適宜判断</td>
+                </tr>
+                <tr>
+                    <td>はし袋</td>
+                    <td><input type="number" id="stock-bag" value="0"></td>
+                    <td>適宜確認</td>
+                    <td id="message-bag">適宜判断</td>
+                </tr>
+                <tr>
+                    <td>中性洗剤</td>
+                    <td><input type="number" id="stock-detergent" value="0"></td>
+                    <td>適宜確認</td>
+                    <td id="message-detergent">適宜判断</td>
+                </tr>
+                <tr>
+                    <td>おしぼり</td>
+                    <td><input type="number" id="stock-oshobori" value="0"></td>
+                    <td>適宜確認</td>
+                    <td id="message-oshobori">適宜判断</td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" id="calculate-button">発注計算</button>
+    </form>
+
+    <script>
+        document.getElementById('calculate-button').addEventListener('click', () => {
+            const dayOfWeek = new Date().getDay(); // 0: 日, 1: 月, ..., 6: 土
+
+            const eggStock = parseInt(document.getElementById('stock-egg').value) || 0;
+            const onsenEggStock = parseInt(document.getElementById('stock-onsen-egg').value) || 0;
+
+            const eggRequirements = [0, 2, 0, 2, 2, 2, 2]; // 日〜土
+            const onsenEggRequirements = [0, 14, 0, 8, 13, 6, 8]; // 日〜土
+
+            const requiredEgg = eggRequirements[dayOfWeek];
+            const requiredOnsenEgg = onsenEggRequirements[dayOfWeek];
+
+            const eggOrder = Math.max(0, requiredEgg - eggStock);
+            const onsenEggOrder = Math.max(0, requiredOnsenEgg - onsenEggStock);
+
+            document.getElementById('required-egg').textContent = requiredEgg > 0 ? requiredEgg + '個' : 'なし';
+            document.getElementById('required-onsen-egg').textContent = requiredOnsenEgg > 0 ? requiredOnsenEgg + '個' : 'なし';
+
+            document.getElementById('message-egg').textContent = eggOrder > 0 ? eggOrder + '個発注' : '発注不要';
+            document.getElementById('message-onsen-egg').textContent = onsenEggOrder > 0 ? onsenEggOrder + '個発注' : '発注不要';
+        });
+    </script>
+</body>
+</html>
